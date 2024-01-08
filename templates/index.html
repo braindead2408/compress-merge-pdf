@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your PDF Tools</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #343a40;
+            color: #ffffff;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .custom-file {
+            margin-bottom: 20px;
+        }
+
+        .drag-and-drop {
+            border: 2px dashed #ffffff;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: border 0.3s;
+        }
+
+        .drag-and-drop.dragover {
+            border: 2px dashed #28a745;
+        }
+
+        .drag-and-drop-text {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="mb-4">PDF Tools</h1>
+
+    <form action="/compress" method="post" enctype="multipart/form-data" id="pdfForm">
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" id="pdfFile" name="file" accept=".pdf" multiple required>
+            <label class="custom-file-label" for="pdfFile">Choose PDF file(s)</label>
+        </div>
+
+        <div class="drag-and-drop" id="dragAndDropArea">
+            <p class="drag-and-drop-text">or drag and drop files here</p>
+        </div>
+
+        <div class="mb-3">
+            <button type="button" class="btn btn-primary" onclick="processFiles('compress')">Compress PDF</button>
+            <button type="button" class="btn btn-success" onclick="processFiles('merge')">Merge PDFs</button>
+        </div>
+    </form>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<script>
+    var pdfFileInput = document.getElementById('pdfFile');
+    var dragAndDropArea = document.getElementById('dragAndDropArea');
+
+    pdfFileInput.addEventListener('change', updateFileLabel);
+
+    dragAndDropArea.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        dragAndDropArea.classList.add('dragover');
+    });
+
+    dragAndDropArea.addEventListener('dragleave', function (e) {
+        e.preventDefault();
+        dragAndDropArea.classList.remove('dragover');
+    });
+
+    dragAndDropArea.addEventListener('drop', function (e) {
+        e.preventDefault();
+        dragAndDropArea.classList.remove('dragover');
+
+        var files = e.dataTransfer.files;
+        pdfFileInput.files = files;
+
+        updateFileLabel();
+    });
+
+    function updateFileLabel() {
+        var files = pdfFileInput.files;
+        var fileNames = Array.from(files).map(file => file.name).join(', ');
+        pdfFileInput.nextElementSibling.innerHTML = fileNames;
+    }
+
+    function processFiles(action) {
+        var files = pdfFileInput.files;
+
+        if (files.length === 0) {
+            alert('Please choose PDF files.');
+            return;
+        }
+
+        if (action === 'compress') {
+            alert('Compression in progress. Please wait for the download.');
+            document.getElementById('pdfForm').submit();
+        } else if (action === 'merge') {
+            alert('Implement merging logic here!');
+        }
+    }
+</script>
+
+</body>
+</html>
